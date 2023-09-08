@@ -1,5 +1,6 @@
 const { Product } = require("../models/product");
 const { HttpError } = require("../helpers");
+const { ControllerWrap } = require("../decorators/controllerWrap");
 
 const getAllProducts = async (req, res) => {
   const result = await Product.find({});
@@ -18,6 +19,6 @@ const getOneProduct = async (req, res) => {
 };
 
 module.exports = {
-  getAllProducts,
-  getOneProduct,
+  getAllProducts: ControllerWrap(getAllProducts),
+  getOneProduct: ControllerWrap(getOneProduct),
 };
