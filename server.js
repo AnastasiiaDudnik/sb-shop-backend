@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 
 const app = require("./app");
 
 const { DB_HOST, PORT = 3001, SESSION_SECRET_KEY } = process.env;
 
-const store = new MongoStore({
+const store = MongoStore.create({
   mongoUrl: DB_HOST,
   collection: "sessions",
 });
