@@ -1,8 +1,25 @@
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const app = require("./app");
 
-const { DB_HOST, PORT = 3001 } = process.env;
+const { DB_HOST, PORT = 3001, SESSION_SECRET_KEY } = process.env;
+
+const store = MongoStore.create({
+  mongoUrl: DB_HOST,
+  collection: "sessions",
+});
+
+app.use(
+  session({
+    secret: SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: { maxAge: 1707195600 }, // Session expiration time
+  })
+);
 
 mongoose
   .connect(DB_HOST)
