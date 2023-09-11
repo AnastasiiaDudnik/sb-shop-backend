@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const { MongooseError } = require("../helpers");
 
 const cartItemSchema = new Schema({
   product: {
@@ -20,6 +21,8 @@ const shoppingCartSchema = new Schema({
   },
   items: [cartItemSchema], // Array of cart items
 });
+
+shoppingCartSchema.post("save", MongooseError);
 
 const Cart = model("cart", shoppingCartSchema);
 
