@@ -6,6 +6,7 @@ require("dotenv").config();
 const app = express();
 
 const productsRouter = require("./routes/products");
+const cartRouter = require("./routes/cart");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/products", productsRouter);
+app.use("/cart", cartRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
