@@ -1,3 +1,4 @@
+const nanoid = require("nanoid");
 const { Product } = require("../models/product");
 const { HttpError } = require("../helpers");
 const { ControllerWrap } = require("../decorators/controllerWrap");
@@ -5,6 +6,9 @@ const { ControllerWrap } = require("../decorators/controllerWrap");
 let recentlyViewed = [];
 
 const getAllProducts = async (req, res) => {
+  const sessionId = nanoid();
+  req.sessions.sessionId = sessionId;
+
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const result = await Product.find({}, null, { skip, limit });
