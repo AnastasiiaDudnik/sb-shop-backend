@@ -15,4 +15,4 @@ productSchema.post("save", MongooseError);
 
 const Product = model("product", productSchema);
 
-module.exports = { Product };
+module.exports = Product;

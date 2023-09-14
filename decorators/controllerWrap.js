@@ -1,5 +1,5 @@
-const ControllerWrap = (controller) => {
-  const func = async (res, req, next) => {
+const controllerWrap = (controller) => {
+  const func = async (req, res, next) => {
     try {
       await controller(req, res, next);
     } catch (error) {
@@ -10,4 +10,4 @@ const ControllerWrap = (controller) => {
   return func;
 };
 
-module.exports = { ControllerWrap };
+module.exports = { controllerWrap };

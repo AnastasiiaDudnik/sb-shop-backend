@@ -1,6 +1,6 @@
 const { Cart } = require("../models/cart");
 const { HttpError } = require("../helpers");
-const { ControllerWrap } = require("../decorators/controllerWrap");
+const { controllerWrap } = require("../decorators/controllerWrap");
 
 const getShoppingCart = async (req, res) => {
   const { sessionId } = req.sessions;
@@ -16,5 +16,5 @@ const getShoppingCart = async (req, res) => {
 };
 
 module.exports = {
-  getShoppingCart: ControllerWrap(getShoppingCart),
+  getShoppingCart: controllerWrap(getShoppingCart),
 };

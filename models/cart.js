@@ -3,7 +3,7 @@ const { MongooseError } = require("../helpers");
 
 const cartItemSchema = new Schema({
   product: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "product", // Reference to the product model
     required: true,
   },

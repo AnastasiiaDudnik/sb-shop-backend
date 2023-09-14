@@ -1,22 +1,21 @@
-const nanoid = require("nanoid");
-const { Product } = require("../models/product");
+const { nanoid } = require("nanoid");
+const Product = require("../models/product");
 const { HttpError } = require("../helpers");
-const { ControllerWrap } = require("../decorators/controllerWrap");
+const { controllerWrap } = require("../decorators/controllerWrap");
 
 let recentlyViewed = [];
 
 const getAllProducts = async (req, res) => {
-  const sessionId = nanoid();
-  req.sessions.sessionId = sessionId;
-
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const result = await Product.find({}, null, { skip, limit });
+
   res.json(result);
 };
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
+  const { sessionId } = req.sessions;
   const result = await Product.findById(id);
 
   if (!result) {
@@ -52,8 +51,8 @@ const getRevetlyViewed = async (req, res) => {
 };
 
 module.exports = {
-  getAllProducts: ControllerWrap(getAllProducts),
-  getOneProduct: ControllerWrap(getOneProduct),
-  updateFavorite: ControllerWrap(updateFavorite),
-  getRevetlyViewed: ControllerWrap(getRevetlyViewed),
+  getAllProducts: controllerWrap(getAllProducts),
+  getOneProduct: controllerWrap(getOneProduct),
+  updateFavorite: controllerWrap(updateFavorite),
+  getRevetlyViewed: controllerWrap(getRevetlyViewed),
 };
