@@ -5,7 +5,6 @@ const { controllerWrap } = require("../decorators/controllerWrap");
 let recentlyViewed = [];
 
 const getAllProducts = async (req, res) => {
-  
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const result = await Product.find({}, null, { skip, limit });
@@ -15,7 +14,6 @@ const getAllProducts = async (req, res) => {
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-  const { sessionId } = req.sessions;
   const result = await Product.findById(id);
 
   if (!result) {
