@@ -1,6 +1,6 @@
-const { Product } = require("../models/product");
+const Product = require("../models/product");
 const { HttpError } = require("../helpers");
-const { ControllerWrap } = require("../decorators/controllerWrap");
+const { controllerWrap } = require("../decorators/controllerWrap");
 
 let recentlyViewed = [];
 
@@ -8,6 +8,7 @@ const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const result = await Product.find({}, null, { skip, limit });
+
   res.json(result);
 };
 
@@ -48,8 +49,8 @@ const getRevetlyViewed = async (req, res) => {
 };
 
 module.exports = {
-  getAllProducts: ControllerWrap(getAllProducts),
-  getOneProduct: ControllerWrap(getOneProduct),
-  updateFavorite: ControllerWrap(updateFavorite),
-  getRevetlyViewed: ControllerWrap(getRevetlyViewed),
+  getAllProducts: controllerWrap(getAllProducts),
+  getOneProduct: controllerWrap(getOneProduct),
+  updateFavorite: controllerWrap(updateFavorite),
+  getRevetlyViewed: controllerWrap(getRevetlyViewed),
 };
