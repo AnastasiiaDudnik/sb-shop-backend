@@ -27,8 +27,8 @@ const getOneProduct = async (req, res) => {
   ) {
     recentlyViewed.push(result);
   }
-
-  res.json({ result, message: "Product added to recently viewed" });
+  res.cookie("recentlyViewed", recentlyViewed, { maxAge: 86400000 }); // 1 day in milliseconds
+  res.json({ result });
 };
 
 const updateFavorite = async (req, res) => {
@@ -45,6 +45,7 @@ const updateFavorite = async (req, res) => {
 };
 
 const getRevetlyViewed = async (req, res) => {
+  const { recentlyViewed } = req.cookies;
   res.json(recentlyViewed);
 };
 
