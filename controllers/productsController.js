@@ -48,6 +48,10 @@ const updateFavorite = async (req, res) => {
     throw HttpError(404, `Product with id "${id}" not found`);
   }
 
+  res.cookie("favorites", result, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  }); // 30 days in milliseconds
+
   res.json(result);
 };
 
