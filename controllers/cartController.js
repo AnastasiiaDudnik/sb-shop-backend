@@ -15,6 +15,8 @@ const getShoppingCart = async (req, res) => {
   res.json(result);
 };
 
+const addToShoppingCart = async (req, res) => {};
+
 module.exports = {
   getShoppingCart: controllerWrap(getShoppingCart),
 };
