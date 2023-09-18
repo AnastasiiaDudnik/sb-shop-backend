@@ -8,11 +8,11 @@ const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const filter = {};
-  const { favorites } = req.cookie;
+  // const { favorites } = req.cookie;
 
-  if (favorites) {
-    filter.isLiked = favorites === "true";
-  }
+  // if (favorites) {
+  //   filter.isLiked = favorites === "true";
+  // }
 
   const result = await Product.find(filter, null, { skip, limit });
 
@@ -21,7 +21,7 @@ const getAllProducts = async (req, res) => {
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-  const { guest } = req.cookie;
+  // const { guest } = req.cookie;
   const result = await Product.findById(id);
 
   if (!result) {
