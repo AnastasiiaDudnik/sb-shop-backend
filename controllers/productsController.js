@@ -8,11 +8,11 @@ const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
   const filter = {};
-  const { favorites } = req.cookies;
+  // const { favorites } = req.cookie;
 
-  if (favorites) {
-    filter.isLiked = favorites === "true";
-  }
+  // if (favorites) {
+  //   filter.isLiked = favorites === "true";
+  // }
 
   const result = await Product.find(filter, null, { skip, limit });
 
@@ -21,6 +21,7 @@ const getAllProducts = async (req, res) => {
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
+  // const { guest } = req.cookie;
   const result = await Product.findById(id);
 
   if (!result) {
@@ -34,12 +35,13 @@ const getOneProduct = async (req, res) => {
   ) {
     recentlyViewed.push(result);
   }
-  res.cookie("recentlyViewed", recentlyViewed, { maxAge: 86400000 }); // 1 day in milliseconds
-  res.json({ result });
+  // res.cookie("recentlyViewed", recentlyViewed, { maxAge: 86400000 }); // 1 day in milliseconds
+  res.json(result);
 };
 
 const updateFavorite = async (req, res) => {
   const { id } = req.params;
+  // const { guest } = req.cookie;
   const result = await Product.findByIdAndUpdate(id, req.body, {
     new: true,
   });
@@ -48,15 +50,15 @@ const updateFavorite = async (req, res) => {
     throw HttpError(404, `Product with id "${id}" not found`);
   }
 
-  res.cookie("favorites", result, {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  }); // 30 days in milliseconds
+  // res.cookie("favorites", result, {
+  //   maxAge: 30 * 24 * 60 * 60 * 1000,
+  // }); // 30 days in milliseconds
 
   res.json(result);
 };
 
 const getRevetlyViewed = async (req, res) => {
-  const { recentlyViewed } = req.cookies;
+  // const { recentlyViewed } = req.cookies;
   res.json(recentlyViewed);
 };
 

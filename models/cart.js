@@ -10,11 +10,11 @@ const cartItemSchema = new Schema({
 });
 
 const shoppingCartSchema = new Schema({
-  sessionId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  // sessionId: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
   items: [cartItemSchema], // Array of cart items
 });
 
