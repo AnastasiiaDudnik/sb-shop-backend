@@ -20,15 +20,9 @@ const addToShoppingCart = async (req, res) => {
   res.status(201).json(result);
 };
 
-const removeFromCart = async (req, res) => {
+const clearCart = async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findById(id);
-
-  if (!product) {
-    throw HttpError(404, `Product with ${id} not found`);
-  }
-
-  const result = await Cart.findByIdAndRemove(product._id);
+  const result = await Cart.findByIdAndUpdate(id, { items: [] });
 
   res.json({
     message: "product deleted",
@@ -39,5 +33,5 @@ const removeFromCart = async (req, res) => {
 module.exports = {
   getShoppingCart: controllerWrap(getShoppingCart),
   addToShoppingCart: controllerWrap(addToShoppingCart),
-  removeFromCart: controllerWrap(removeFromCart),
+  clearCart: controllerWrap(clearCart),
 };

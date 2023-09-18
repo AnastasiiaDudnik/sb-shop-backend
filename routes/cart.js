@@ -4,11 +4,11 @@ const router = express.Router();
 const {
   getShoppingCart,
   addToShoppingCart,
-  removeFromCart,
+  clearCart,
 } = require("../controllers/cartController");
 
 router.get("/", getShoppingCart);
 router.post("/:id", addToShoppingCart);
-router.delete("/:id", removeFromCart);
+router.delete("/:id", clearCart);
 
 module.exports = router;
