@@ -2,11 +2,10 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const { nanoid } = require("nanoid");
+// const { nanoid } = require("nanoid");
 require("dotenv").config();
 
 const productsRouter = require("./routes/products");
-const cartRouter = require("./routes/cart");
 
 const app = express();
 
@@ -28,7 +27,6 @@ app.use(cookieParser());
 // });
 
 app.use("/products", productsRouter);
-app.use("/cart", cartRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
