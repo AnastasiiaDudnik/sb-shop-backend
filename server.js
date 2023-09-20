@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 const app = require("./app");
 
@@ -6,7 +7,7 @@ const { DB_HOST, PORT = 3001, SESSION_SECRET_KEY } = process.env;
 
 app.use(
   session({
-    secret: SESSION_SECRET_KEY, // Replace with a strong secret key
+    secret: SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: true,
   })
