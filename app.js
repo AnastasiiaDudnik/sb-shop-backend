@@ -1,7 +1,7 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const session = require("express-session");
 // const { nanoid } = require("nanoid");
 require("dotenv").config();
 
@@ -14,17 +14,16 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//   const { guest } = req.cookies || nanoid();
-//   res.cookie("guest", guest, {
-//     maxAge: 30 * 24 * 60 * 60 * 1000,
-//     httpOnly: true,
-//     sameSite: "lax",
-//   }); // 30 days in milliseconds
-//   next();
-// });
+const { SESSION_SECRET_KEY } = process.env;
+
+app.use(
+  session({
+    secret: SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use("/products", productsRouter);
 
