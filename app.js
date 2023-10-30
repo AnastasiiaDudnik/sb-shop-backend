@@ -2,8 +2,8 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
-const cookieParser = require("cookie-parser");
-const { nanoid } = require("nanoid");
+// const cookieParser = require("cookie-parser");
+// const { nanoid } = require("nanoid");
 require("dotenv").config();
 
 const productsRouter = require("./routes/products");
@@ -17,7 +17,7 @@ const { SESSION_SECRET_KEY } = process.env;
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.use(
   session({

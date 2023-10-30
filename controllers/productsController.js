@@ -3,27 +3,22 @@ const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators/controllerWrap");
 
 const getAllProducts = async (req, res) => {
-  const { id: sessionId } = req.session;
-  res.cookie("guest", sessionId, {
-    domain: "https://anastasiiadudnik.github.io/shop-test/",
-  });
-  // console.log(sessionId);
+  const { id } = req.session;
 
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
   const result = await Product.find({}, null, { skip, limit });
-
-  res.json(result);
-  console.log(res);
+  res.cookie("guest", id);
+  res.json({ result, id });
 };
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-  // const { id: sessionId } = req.session;
+  const { cookie } = req.session;
 
   // const { guest } = req.cookies;
-  // console.log(guest);
+  console.log(cookie);
 
   const result = await Product.findById(id);
 
