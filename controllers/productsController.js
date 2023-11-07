@@ -24,8 +24,14 @@ const getAllProducts = async (req, res) => {
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
 
-  // const { guest } = req.cookie;
-  // console.log(req.cookie);
+  // const { guest } = req.headers.cookie;
+  // console.log(guest);
+  const cookieHeaders = req.headers.cookie;
+  const cookies = cookieHeaders.split(";");
+
+  for (const cookie of cookies) {
+    console.log(cookie);
+  }
 
   const result = await Product.findById(id);
 
@@ -33,21 +39,19 @@ const getOneProduct = async (req, res) => {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  // res.cookie("guestID", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000 }); //store for 30 days
+  // const recentlyViewed = req.session.recentlyViewed || [];
 
-  const recentlyViewed = req.session.recentlyViewed || [];
+  // // Check if the product is already in the recently viewed list
+  // const index = recentlyViewed.findIndex(
+  //   (product) => product._id.toString() === id
+  // );
 
-  // Check if the product is already in the recently viewed list
-  const index = recentlyViewed.findIndex(
-    (product) => product._id.toString() === id
-  );
+  // //  If the product is not in the list, add it
+  // if (index === -1) {
+  //   recentlyViewed.push(result);
+  // }
 
-  //  If the product is not in the list, add it
-  if (index === -1) {
-    recentlyViewed.push(result);
-  }
-
-  res.json({ result, recentlyViewed });
+  res.json({ result });
 };
 
 const updateFavorite = async (req, res) => {
