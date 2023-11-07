@@ -9,16 +9,23 @@ const getAllProducts = async (req, res) => {
   const skip = (page - 1) * limit;
 
   const result = await Product.find({}, null, { skip, limit });
-  res.cookie("guest", id);
-  res.json({ result, id });
+
+  res.cookie("guest", id, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: false,
+  });
+  if (!res.getHeader("set-cookie")) {
+    res.send({ message: "Cookies not set" });
+  }
+
+  res.json(result);
 };
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-  const { cookie } = req.session;
 
-  // const { guest } = req.cookies;
-  console.log(cookie);
+  // const { guest } = req.cookie;
+  // console.log(req.cookie);
 
   const result = await Product.findById(id);
 
@@ -69,6 +76,7 @@ const getRevetlyViewed = async (req, res) => {
 
 module.exports = {
   getAllProducts: controllerWrap(getAllProducts),
+  // setCookie: controllerWrap(setCookie),
   getOneProduct: controllerWrap(getOneProduct),
   updateFavorite: controllerWrap(updateFavorite),
   getRevetlyViewed: controllerWrap(getRevetlyViewed),
