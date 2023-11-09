@@ -8,17 +8,25 @@ const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
-  const result = await Product.find({}, null, { skip, limit });
+  const products = await Product.find({}, null, { skip, limit });
 
-  res.cookie("guest", id, {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    httpOnly: false,
-  });
-  if (!res.getHeader("set-cookie")) {
-    res.send({ message: "Cookies not set" });
+  const cookieHeaders = req.headers.cookie;
+  const cookies = cookieHeaders.split(";");
+  const cookieToFind = "guest";
+
+  const result = cookies.find((item) => item.startsWith(cookieToFind));
+
+  if (!result) {
+    res.cookie("guest", id, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+    });
+    if (!res.getHeader("set-cookie")) {
+      res.send({ message: "Cookies not set" });
+    }
   }
 
-  res.json(result);
+  res.json(products);
 };
 
 const getOneProduct = async (req, res) => {
