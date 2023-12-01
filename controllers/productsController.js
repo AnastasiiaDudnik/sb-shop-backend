@@ -19,7 +19,8 @@ const getAllProducts = async (req, res) => {
   if (!result) {
     res.cookie("guest", id, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: false,
+      httpOnly: true,
+      sameSite: "Lax",
     });
     if (!res.getHeader("set-cookie")) {
       res.send({ message: "Cookies not set" });
