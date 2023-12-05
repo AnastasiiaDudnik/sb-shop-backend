@@ -20,7 +20,8 @@ const getAllProducts = async (req, res) => {
     res.cookie("guest", id, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "Lax",
+      secure: true,
+      sameSite: "None",
     });
     if (!res.getHeader("set-cookie")) {
       res.send({ message: "Cookies not set" });
@@ -33,8 +34,6 @@ const getAllProducts = async (req, res) => {
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
 
-  // const { guest } = req.headers.cookie;
-  // console.log(guest);
   const cookieHeaders = req.headers.cookie;
   const cookies = cookieHeaders.split(";");
 

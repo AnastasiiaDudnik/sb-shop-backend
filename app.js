@@ -11,9 +11,9 @@ const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 const corsOptions = {
-  // origin: "http://localhost:3000",
+  // origin: ["http://localhost:3000", "anastasiiadudnik.github.io"],
   origin: true,
-  // origin: "anastasiiadudnik.github.io/shop-test/",
+  // origin: "anastasiiadudnik.github.io",
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
@@ -23,7 +23,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Handle preflight requests
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 
 const { SESSION_SECRET_KEY } = process.env;
 
