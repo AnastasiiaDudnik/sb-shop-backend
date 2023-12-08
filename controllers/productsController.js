@@ -14,7 +14,7 @@ const getAllProducts = async (req, res) => {
   const cookies = cookieHeaders.split(";");
 
   for (const cookie of cookies) {
-    const [key, value] = cookie.split("=");
+    const [key] = cookie.split("=");
 
     if (key !== "guest") {
       res.cookie("guest", id, {
@@ -50,24 +50,12 @@ const getOneProduct = async (req, res) => {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  // const recentlyViewed = req.session.recentlyViewed || [];
-
-  // // Check if the product is already in the recently viewed list
-  // const index = recentlyViewed.findIndex(
-  //   (product) => product._id.toString() === id
-  // );
-
-  // //  If the product is not in the list, add it
-  // if (index === -1) {
-  //   recentlyViewed.push(result);
-  // }
-
   res.json({ result });
 };
 
 const updateFavorite = async (req, res) => {
   const { id } = req.params;
-  // const { guest } = req.cookie;
+
   const result = await Product.findByIdAndUpdate(id, req.body, {
     new: true,
   });
@@ -76,22 +64,16 @@ const updateFavorite = async (req, res) => {
     throw HttpError(404, `Product with id "${id}" not found`);
   }
 
-  // res.cookie("favorites", result, {
-  //   maxAge: 30 * 24 * 60 * 60 * 1000,
-  // }); // 30 days in milliseconds
-
   res.json(result);
 };
 
 const getRevetlyViewed = async (req, res) => {
-  // console.log(req.session);
   const { recentlyViewed } = req.session.recentlyViewed;
   res.json(recentlyViewed);
 };
 
 module.exports = {
   getAllProducts: controllerWrap(getAllProducts),
-  // setCookie: controllerWrap(setCookie),
   getOneProduct: controllerWrap(getOneProduct),
   updateFavorite: controllerWrap(updateFavorite),
   getRevetlyViewed: controllerWrap(getRevetlyViewed),
