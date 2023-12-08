@@ -12,19 +12,20 @@ const getAllProducts = async (req, res) => {
 
   const cookieHeaders = req.headers.cookie;
   const cookies = cookieHeaders.split(";");
-  const cookieToFind = "guest";
 
-  const result = cookies.find((item) => item.startsWith(cookieToFind));
+  for (const cookie of cookies) {
+    const [key, value] = cookie.split("=");
 
-  if (!result) {
-    res.cookie("guest", id, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    });
-    if (!res.getHeader("set-cookie")) {
-      res.send({ message: "Cookies not set" });
+    if (key !== "guest") {
+      res.cookie("guest", id, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      });
+      if (!res.getHeader("set-cookie")) {
+        res.send({ message: "Cookies not set" });
+      }
     }
   }
 
@@ -38,7 +39,9 @@ const getOneProduct = async (req, res) => {
   const cookies = cookieHeaders.split(";");
 
   for (const cookie of cookies) {
-    console.log(cookie);
+    const [key, value] = cookie.split("=");
+
+    console.log(`Key: ${key}, Value: ${value}`);
   }
 
   const result = await Product.findById(id);
