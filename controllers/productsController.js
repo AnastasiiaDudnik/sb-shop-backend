@@ -48,7 +48,7 @@ const getOneProduct = async (req, res) => {
     sameSite: "None",
   });
 
-  res.json({ result });
+  res.json(result);
 };
 
 const updateFavorite = async (req, res) => {
@@ -65,7 +65,7 @@ const updateFavorite = async (req, res) => {
   res.json(result);
 };
 
-const getRevetlyViewed = async (req, res) => {
+const getRecetlyViewed = async (req, res) => {
   const { recentlyViewed } = req.session.recentlyViewed;
   res.json(recentlyViewed);
 };
@@ -74,5 +74,5 @@ module.exports = {
   getAllProducts: controllerWrap(getAllProducts),
   getOneProduct: controllerWrap(getOneProduct),
   updateFavorite: controllerWrap(updateFavorite),
-  getRevetlyViewed: controllerWrap(getRevetlyViewed),
+  getRecetlyViewed: controllerWrap(getRecetlyViewed),
 };
