@@ -1,7 +1,6 @@
 const Product = require("../models/product");
 const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators/controllerWrap");
-const addRecentlyViewedProducts = require("../helpers");
 
 const getAllProducts = async (req, res) => {
   const { id } = req.session;
@@ -35,30 +34,19 @@ const getAllProducts = async (req, res) => {
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-  const { id: userID } = req.session;
-  // console.log(req);
 
-  // const cookieHeaders = req.headers.cookie;
-  // const cookies = cookieHeaders.split(";");
-
-  // for (const cookie of cookies) {
-  //   const [key, value] = cookie.split("=");
-
-  //   console.log(`Key: ${key}, Value: ${value}`);
-  // }
-  // addRecentlyViewedProducts(id);
   const result = await Product.findById(id);
 
   if (!result) {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  // addRecentlyViewedProducts(userID, id);
-
-  const { recentlyViewedProducts } = req;
-  const viewed = recentlyViewedProducts.push(id);
-  console.log(`Product ${id} viewed by guest with ID ${userID}`);
-  console.log(recentlyViewedProducts);
+  res.cookie("viewed", id, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
 
   res.json({ result });
 };

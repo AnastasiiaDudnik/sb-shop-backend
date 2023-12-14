@@ -22,11 +22,7 @@ app.use(logger(formatsLogger));
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Handle preflight requests
-// app.options("*", cors(corsOptions));
-
 const { SESSION_SECRET_KEY } = process.env;
-const { getRecentlyViewedProducts } = require("./helpers");
 
 app.use(
   session({
@@ -36,23 +32,10 @@ app.use(
     debug: true,
 
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // Set the session max age to 1 hour (in milliseconds)
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
 );
-
-app.use((req, res, next) => {
-  const { id } = req.session;
-
-  // Fetch recently viewed products from the server/database based on the sessionToken
-  const recentlyViewedProducts = getRecentlyViewedProducts(id);
-
-  // Attach recently viewed products to the request object for use in route handlers
-  // req.sessionToken = sessionToken;
-  req.recentlyViewedProducts = recentlyViewedProducts;
-
-  next();
-});
 
 app.use("/products", productsRouter);
 
