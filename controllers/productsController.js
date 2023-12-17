@@ -66,8 +66,21 @@ const updateFavorite = async (req, res) => {
 };
 
 const getRecetlyViewed = async (req, res) => {
-  const { recentlyViewed } = req.session.recentlyViewed;
-  res.json(recentlyViewed);
+  const cookieHeaders = req.headers.cookie;
+  const cookies = cookieHeaders.split(";");
+
+  const cookieObjects = cookies.map((cookieString) => {
+    const [key, value] = cookieString.trim().split("=");
+    return { key, value };
+  });
+
+  const isViewed = cookieObjects.find(({ key }) => key === "viewed");
+
+  if (isViewed) {
+    const result = await Product.findById(isViewed.value);
+    console.log(result);
+    res.json(result);
+  }
 };
 
 module.exports = {
