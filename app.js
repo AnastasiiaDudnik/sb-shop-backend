@@ -2,7 +2,6 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
-// const { nanoid } = require("nanoid");
 require("dotenv").config();
 
 const productsRouter = require("./routes/products");
@@ -11,11 +10,19 @@ const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
-const { SESSION_SECRET_KEY } = process.env;
+const corsOptions = {
+  // origin: ["http://localhost:3000", "anastasiiadudnik.github.io"],
+  origin: true,
+  // origin: "anastasiiadudnik.github.io",
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+};
 
 app.use(logger(formatsLogger));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+const { SESSION_SECRET_KEY } = process.env;
 
 app.use(
   session({

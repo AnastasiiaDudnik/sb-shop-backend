@@ -8,24 +8,35 @@ const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
-  const result = await Product.find({}, null, { skip, limit });
+  const products = await Product.find({}, null, { skip, limit });
 
-  res.cookie("guest", id, {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    httpOnly: false,
+  const cookieHeaders = req.headers.cookie;
+  const cookies = cookieHeaders.split(";");
+
+  const cookieObjects = cookies.map((cookieString) => {
+    const [key, value] = cookieString.trim().split("=");
+    return { key, value };
   });
-  if (!res.getHeader("set-cookie")) {
-    res.send({ message: "Cookies not set" });
+
+  const guest = cookieObjects.find(({ key }) => key === "guest");
+
+  if (!guest) {
+    res.cookie("guest", id, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
+    if (!res.getHeader("set-cookie")) {
+      res.send({ message: "Cookies not set" });
+    }
   }
 
-  res.json(result);
+  res.json(products);
 };
 
 const getOneProduct = async (req, res) => {
   const { id } = req.params;
-
-  // const { guest } = req.cookie;
-  // console.log(req.cookie);
 
   const result = await Product.findById(id);
 
@@ -33,26 +44,19 @@ const getOneProduct = async (req, res) => {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  // res.cookie("guestID", sessionId, { maxAge: 30 * 24 * 60 * 60 * 1000 }); //store for 30 days
+  res.cookie("viewed", id, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
 
-  const recentlyViewed = req.session.recentlyViewed || [];
-
-  // Check if the product is already in the recently viewed list
-  const index = recentlyViewed.findIndex(
-    (product) => product._id.toString() === id
-  );
-
-  //  If the product is not in the list, add it
-  if (index === -1) {
-    recentlyViewed.push(result);
-  }
-
-  res.json({ result, recentlyViewed });
+  res.json(result);
 };
 
 const updateFavorite = async (req, res) => {
   const { id } = req.params;
-  // const { guest } = req.cookie;
+
   const result = await Product.findByIdAndUpdate(id, req.body, {
     new: true,
   });
@@ -61,23 +65,30 @@ const updateFavorite = async (req, res) => {
     throw HttpError(404, `Product with id "${id}" not found`);
   }
 
-  // res.cookie("favorites", result, {
-  //   maxAge: 30 * 24 * 60 * 60 * 1000,
-  // }); // 30 days in milliseconds
-
   res.json(result);
 };
 
-const getRevetlyViewed = async (req, res) => {
-  // console.log(req.session);
-  const { recentlyViewed } = req.session.recentlyViewed;
-  res.json(recentlyViewed);
+const getRecetlyViewed = async (req, res) => {
+  const cookieHeaders = req.headers.cookie;
+  const cookies = cookieHeaders.split(";");
+
+  const cookieObjects = cookies.map((cookieString) => {
+    const [key, value] = cookieString.trim().split("=");
+    return { key, value };
+  });
+
+  const isViewed = cookieObjects.find(({ key }) => key === "viewed");
+
+  if (isViewed) {
+    const result = await Product.findById(isViewed.value);
+
+    res.json(result);
+  }
 };
 
 module.exports = {
   getAllProducts: controllerWrap(getAllProducts),
-  // setCookie: controllerWrap(setCookie),
   getOneProduct: controllerWrap(getOneProduct),
   updateFavorite: controllerWrap(updateFavorite),
-  getRevetlyViewed: controllerWrap(getRevetlyViewed),
+  getRecetlyViewed: controllerWrap(getRecetlyViewed),
 };
