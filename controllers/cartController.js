@@ -41,6 +41,10 @@ const addToCart = async (req, res) => {
     cart = JSON.parse(decodeURIComponent(cart));
   }
 
+  // const excistingProduct = cart.find((item) => item._id === product._id);
+  // if (excistingProduct) {
+  //   // add quantity
+  // }
   cart.push(product);
   cart = encodeURIComponent(JSON.stringify(cart));
   cookies.set("cart", cart);
