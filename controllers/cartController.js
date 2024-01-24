@@ -15,6 +15,8 @@ const getCart = async (req, res) => {
 
   if (!cart) {
     res.json(null);
+  } else {
+    res.json(cart.value);
   }
 };
 
@@ -22,6 +24,12 @@ const addToCart = async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findById(id);
+
+  if (!product) {
+    throw HttpError(404, `Product with "${id}" not found`);
+  }
+
+  console.log(product);
 
   const cookieHeaders = req.headers.cookie;
   const cookies = cookieHeaders.split(";");
@@ -31,7 +39,22 @@ const addToCart = async (req, res) => {
     return { key, value };
   });
 
-  let cart = cookieObjects.find(({ key }) => key === "cart") || [];
+  // console.log(cookieObjects);
+
+  const cartCookie = cookieObjects.find(({ key }) => key === "cart");
+  console.log(cartCookie);
+
+  let cart = [];
+
+  if (cartCookie) {
+    cart = JSON.parse(cartCookie.value);
+    console.log(cart);
+  }
+
+  cart.push(product);
+
+  res.cookie("cart", JSON.stringify(cart));
+  res.json(cart);
 };
 
 module.exports = {
