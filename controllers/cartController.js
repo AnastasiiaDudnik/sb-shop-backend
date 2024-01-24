@@ -5,20 +5,14 @@ const { controllerWrap } = require("../decorators/controllerWrap");
 const Cookies = require("cookies");
 
 const getCart = async (req, res) => {
-  const cookieHeaders = req.headers.cookie;
-  const cookies = cookieHeaders.split(";");
+  const cookies = new Cookies(req, res);
 
-  const cookieObjects = cookies.map((cookieString) => {
-    const [key, value] = cookieString.trim().split("=");
-    return { key, value };
-  });
-
-  const cart = cookieObjects.find(({ key }) => key === "cart");
+  const cart = cookies.get("cart");
 
   if (!cart) {
     res.json(null);
   } else {
-    res.json(cart.value);
+    res.json(JSON.parse(decodeURIComponent(cart)));
   }
 };
 
