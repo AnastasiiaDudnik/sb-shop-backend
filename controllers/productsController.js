@@ -28,7 +28,7 @@ const getOneProduct = async (req, res) => {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     // httpOnly: true,
     // secure: true,  // uncomment when https
-    sameSite: "None",
+    // sameSite: "None",
   });
 
   res.json(result);
