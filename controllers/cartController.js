@@ -2,6 +2,8 @@ const Product = require("../models/product");
 const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators/controllerWrap");
 
+const Cookies = require("cookies");
+
 const getCart = async (req, res) => {
   const cookieHeaders = req.headers.cookie;
   const cookies = cookieHeaders.split(";");
@@ -29,31 +31,19 @@ const addToCart = async (req, res) => {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  console.log(product);
+  const cookies = new Cookies(req, res);
 
-  const cookieHeaders = req.headers.cookie;
-  const cookies = cookieHeaders.split(";");
+  let cart = cookies.get("cart");
 
-  const cookieObjects = cookies.map((cookieString) => {
-    const [key, value] = cookieString.trim().split("=");
-    return { key, value };
-  });
-
-  // console.log(cookieObjects);
-
-  const cartCookie = cookieObjects.find(({ key }) => key === "cart");
-  console.log(cartCookie);
-
-  let cart = [];
-
-  if (cartCookie) {
-    cart = JSON.parse(cartCookie.value);
-    console.log(cart);
+  if (!cart) {
+    cart = [];
+  } else {
+    cart = JSON.parse(decodeURIComponent(cart));
   }
 
   cart.push(product);
-
-  res.cookie("cart", JSON.stringify(cart));
+  cart = encodeURIComponent(JSON.stringify(cart));
+  cookies.set("cart", cart);
   res.json(cart);
 };
 
