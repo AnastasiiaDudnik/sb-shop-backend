@@ -2,35 +2,13 @@ const Product = require("../models/product");
 const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators/controllerWrap");
 
-const getAllProducts = async (req, res) => {
-  const { id } = req.session;
+const Cookies = require("cookies");
 
+const getAllProducts = async (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
   const products = await Product.find({}, null, { skip, limit });
-
-  const cookieHeaders = req.headers.cookie;
-  const cookies = cookieHeaders.split(";");
-
-  const cookieObjects = cookies.map((cookieString) => {
-    const [key, value] = cookieString.trim().split("=");
-    return { key, value };
-  });
-
-  const guest = cookieObjects.find(({ key }) => key === "guest");
-
-  if (!guest) {
-    res.cookie("guest", id, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    });
-    if (!res.getHeader("set-cookie")) {
-      res.send({ message: "Cookies not set" });
-    }
-  }
 
   res.json(products);
 };
@@ -44,10 +22,12 @@ const getOneProduct = async (req, res) => {
     throw HttpError(404, `Product with "${id}" not found`);
   }
 
-  res.cookie("viewed", id, {
+  const cookies = new Cookies(req, res);
+
+  cookies.set("viewed", id, {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: true,
+    // httpOnly: true,
+    // secure: true,  // uncomment when https
     sameSite: "None",
   });
 
@@ -69,18 +49,12 @@ const updateFavorite = async (req, res) => {
 };
 
 const getRecetlyViewed = async (req, res) => {
-  const cookieHeaders = req.headers.cookie;
-  const cookies = cookieHeaders.split(";");
+  const cookies = new Cookies(req, res);
 
-  const cookieObjects = cookies.map((cookieString) => {
-    const [key, value] = cookieString.trim().split("=");
-    return { key, value };
-  });
-
-  const isViewed = cookieObjects.find(({ key }) => key === "viewed");
+  const isViewed = cookies.get("viewed");
 
   if (isViewed) {
-    const result = await Product.findById(isViewed.value);
+    const result = await Product.findById(isViewed);
 
     res.json(result);
   }
