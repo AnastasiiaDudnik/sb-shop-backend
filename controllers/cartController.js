@@ -60,11 +60,17 @@ const deleteOneFromCart = async (req, res) => {
   const cart = JSON.parse(decodeURIComponent(cartCookies));
 
   const filtered = cart.filter((item) => item._id !== id);
+
   cookies.set("cart", encodeURIComponent(JSON.stringify(filtered)), {
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
-  res.json(filtered);
+  if (filtered.length === 0) {
+    cookies.set("cart", "", { maxAge: 0 });
+    res.json(null);
+  } else {
+    res.json(filtered);
+  }
 };
 
 module.exports = {
