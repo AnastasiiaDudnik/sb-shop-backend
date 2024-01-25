@@ -41,11 +41,34 @@ const addToCart = async (req, res) => {
   // }
   cart.push(product);
   cart = encodeURIComponent(JSON.stringify(cart));
-  cookies.set("cart", cart);
+  cookies.set("cart", cart, { maxAge: 30 * 24 * 60 * 60 * 1000 });
   res.json(cart);
+};
+
+const deleteOneFromCart = async (req, res) => {
+  const { id } = req.params;
+
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw HttpError(404, `Product with "${id}" not found`);
+  }
+
+  const cookies = new Cookies(req, res);
+
+  const cartCookies = cookies.get("cart");
+  const cart = JSON.parse(decodeURIComponent(cartCookies));
+
+  const filtered = cart.filter((item) => item._id !== id);
+  cookies.set("cart", encodeURIComponent(JSON.stringify(filtered)), {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  res.json(filtered);
 };
 
 module.exports = {
   getCart: controllerWrap(getCart),
   addToCart: controllerWrap(addToCart),
+  deleteOneFromCart: controllerWrap(deleteOneFromCart),
 };
