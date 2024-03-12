@@ -5,6 +5,7 @@ const session = require("express-session");
 require("dotenv").config();
 
 const productsRouter = require("./routes/products");
+const cartRouter = require("./routes/userCart");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(
 );
 
 app.use("/products", productsRouter);
+app.use("/cart", cartRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
